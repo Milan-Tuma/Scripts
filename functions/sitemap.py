@@ -1,26 +1,28 @@
-import re
-import requests
-
 def get_sitemap(url: str):
-  sitemap = requests.get(url)
-  return sitemap.content.decode('utf-8')
+    import requests
+
+    sitemap = requests.get(url)
+    return sitemap.content.decode("utf-8")
+
 
 def get_sitemap_urls(content: str):
-  loc_regex = re.compile(r'<loc>(.*?)</loc>')
+    import re
 
-  matches: list[str] = loc_regex.findall(content)
+    loc_regex = re.compile(r"<loc>(.*?)</loc>")
 
-  urls_from_xml = []
+    matches: list[str] = loc_regex.findall(content)
 
-  for match in matches:
-    if match.find('sitemap.xml') != -1:
-      additional_sitemap = get_sitemap(match)
+    urls_from_xml = []
 
-      print(f"Found additional sitemaps at: {match}")
+    for match in matches:
+        if match.find("sitemap.xml") != -1:
+            additional_sitemap = get_sitemap(match)
 
-      additional_urls = get_sitemap_urls(additional_sitemap)
-      urls_from_xml.extend(additional_urls)
-    else:
-      urls_from_xml.append(match)
+            print(f"Found additional sitemaps at: {match}")
 
-  return urls_from_xml
+            additional_urls = get_sitemap_urls(additional_sitemap)
+            urls_from_xml.extend(additional_urls)
+        else:
+            urls_from_xml.append(match)
+
+    return urls_from_xml
